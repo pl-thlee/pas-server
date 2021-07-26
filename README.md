@@ -1,5 +1,7 @@
 # Programming Assistant System Server (PAS Server)
 
+본 저장소는 원격 프로그래밍 교육 보조시스템을 위한 서버 저장소입니다.
+
 
 
 ## 필요 모듈 설치 (Requirements for Windows)
