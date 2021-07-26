@@ -4,7 +4,11 @@
 
 
 
-## 필요 모듈 설치 (Requirements for Windows)
+## Getting Started
+
+
+
+### Installation
 
 - [Node v14.17.3](https://nodejs.org/ko/download/)
 - [MongoDB v5.0.x](https://www.mongodb.com/try/download/community)
