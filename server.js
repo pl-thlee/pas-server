@@ -1,18 +1,18 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var url = require('url');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const url = require('url');
 
-var app = express();
-var server = require('http').Server(app);
+const app = express();
+const server = require('http').Server(app);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // init websockets servers
-var wssShareDB = require('./src/wss-sharedb')(server);
-var wssCursors = require('./src/wss-cursors')(server);
+const wssShareDB = require('./src/wss-sharedb')(server);
+const wssCursors = require('./src/wss-cursors')(server);
 
 server.on('upgrade', (request, socket, head) => {
   const pathname = url.parse(request.url).pathname;

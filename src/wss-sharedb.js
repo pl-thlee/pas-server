@@ -1,40 +1,55 @@
-var WebSocket = require('ws');
-var WebSocketJSONStream = require('websocket-json-stream');
-var shareDBServer = require('./sharedb-server');
-var uuid = require('uuid');
+/**
+ * @see https://github.com/websockets/ws
+ */
+const WebSocket = require('ws');
+const WebSocketJSONStream = require('websocket-json-stream');
+const backend = require('./sharedb-server');
+const { v4: uuidv4 } = require('uuid');
 
-
-module.exports = function(server) {
-  var wss = new WebSocket.Server({
-    noServer: true
+module.exports = (server) => {
+  /**
+   * @see https://github.com/websockets/ws/blob/master/doc/ws.md#new-websocketserveroptions-callback
+   */
+  const ws = new WebSocket.Server({
+    noServer: true,
   });
 
-  wss.on('connection', function(ws, req) {
-
+  /** @see https://github.com/websockets/ws#simple-server */
+  ws.on('connection', (ws, req) => {
     // generate an id for the socket
-    ws.id = uuid();
+    ws.id = uuidv4();
     ws.isAlive = true;
 
-    var stream = new WebSocketJSONStream(ws);
-    shareDBServer.listen(stream);
+    const stream = new WebSocketJSONStream(ws);
+    backend.listen(stream);
 
-    ws.on('pong', function(data, flags) {
+    /**
+     * @see https://github.com/websockets/ws#how-to-detect-and-close-broken-connections
+     */
+    ws.on('pong', (data) => {
       ws.isAlive = true;
     });
 
-    ws.on('error', function(error) {
+    ws.on('error', (errorCode) => {
+      console.error(errorCode);
     });
   });
 
   // Sockets Ping, Keep Alive
-  setInterval(function() {
-    wss.clients.forEach(function(ws) {
-      if (ws.isAlive === false) return ws.terminate();
+  const interval = setInterval((ping) => {
+    ws.clients.forEach((ws) => {
+      if (!ws.isAlive) {
+        return ws.terminate();
+      }
 
       ws.isAlive = false;
-      ws.ping();
+      ws.ping(() => {});
     });
   }, 30000);
 
-  return wss;
+  ws.on('close', () => {
+    clearInterval(interval);
+  });
+
+  return ws;
 };
