@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 const _ = require('lodash');
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (server) => {
   const notifyConnections = (sourceId) => {
@@ -24,7 +24,7 @@ module.exports = (server) => {
 
   wss.on('connection', (ws) => {
     // generate an id for the socket
-    ws.id = uuid();
+    ws.id = uuidv4();
     ws.isAlive = true;
 
     ws.on('message', (message) => {
