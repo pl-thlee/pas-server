@@ -6,7 +6,6 @@ ShareDB.types.register(require('rich-text').type);
 /** @see https://share.github.io/sharedb/adapters/database#available-adapters */
 module.exports = new ShareDB({
   db: require('sharedb-mongo')(
-    process.env.MONGODB_URI ||
-      'mongodb://localhost/quill-test?auto_reconnect=true'
+    process.env.MONGODB_URI || 'mongodb://localhost/quill-test'
   ),
 });
