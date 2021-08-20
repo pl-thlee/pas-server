@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const url = require('url');
 
 const app = express();
+app.set('PORT', process.env.PORT || 4000);
 const server = require('http').Server(app);
 
 app.use(bodyParser.json());
@@ -30,4 +31,4 @@ server.on('upgrade', (request, socket, head) => {
   }
 });
 
-server.listen(4000);
+server.listen(app.get('PORT'));
