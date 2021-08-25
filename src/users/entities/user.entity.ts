@@ -12,7 +12,7 @@ export class User {
   studentId: number;
 
   @ApiProperty({ example: '$code1234', description: '비밀번호' })
-  @Column('char', { name: 'ps', length: 150 })
+  @Column('char', { name: 'ps', length: 100 })
   password: string;
 
   @ApiProperty({ example: '이도제', description: '이름' })
@@ -27,9 +27,13 @@ export class User {
   @Column('char', { name: 'email', length: 50 })
   email: string;
 
-  @ApiProperty({ example: 'student', description: '사용자 그룹' })
+  @ApiProperty({
+    example: 'teacher',
+    description: '사용자 그룹',
+    default: 'student',
+  })
   // @Column('enum', { name: 'user_group', enum: ['student', 'teacher'] })
-  @Column('varchar', { name: 'user_group', length: 15 })
+  @Column('varchar', { name: 'user_group', length: 15, default: 'student' })
   userGroup: string;
 
   @Column('datetime', {

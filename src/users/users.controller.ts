@@ -17,7 +17,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 @ApiTags('Users')
 @ApiResponse({ status: 200, description: '성공' })
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

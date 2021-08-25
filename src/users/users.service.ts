@@ -13,6 +13,7 @@ export class UsersService {
   ) {}
 
   async signUp(signUpUserDto: SignUpUserDto) {
+    // console.log('[signUp]', signUpUserDto);
     const { userId, studentId, password, name, phone, email, userGroup } =
       signUpUserDto;
     const user = await this.usersRepository.findOne({ where: { studentId } });
