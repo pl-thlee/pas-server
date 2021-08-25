@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JoinUserDto } from './dto/join-user.dto';
+import { SignUpUserDto } from './dto/signup-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
@@ -11,7 +11,8 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  join(joinUserDto: JoinUserDto) {
+  signUp(signUpUserDto: SignUpUserDto) {
+    // const hashedPassword = await bcrypt.hash(signUpUserDto.ps, 12);
     return 'This action adds a new user';
   }
 
