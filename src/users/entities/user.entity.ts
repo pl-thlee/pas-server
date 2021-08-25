@@ -12,7 +12,7 @@ export class User {
   studentId: number;
 
   @ApiProperty({ example: '$code1234', description: '비밀번호' })
-  @Column('char', { name: 'ps', length: 50 })
+  @Column('char', { name: 'ps', length: 150 })
   password: string;
 
   @ApiProperty({ example: '이도제', description: '이름' })
