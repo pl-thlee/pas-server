@@ -6,7 +6,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 
-import * as ormconfig from './ormconfig';
+import * as ormconfig from '../ormconfig';
 
 @Module({
   imports: [

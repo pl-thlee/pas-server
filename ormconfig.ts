@@ -12,7 +12,10 @@ const config: TypeOrmModuleOptions = {
   password: process.env.DB_PASS,
   database: process.env.DB_HOST,
   entities: [User],
-  synchronize: false,
+  synchronize: true,
+  charset: 'utf8mb4',
+  logging: true,
+  keepConnectionAlive: true,
 };
 
 export = config;
