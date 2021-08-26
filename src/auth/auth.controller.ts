@@ -9,7 +9,9 @@ export class AuthController {
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
-  async logIn(@Body() loginUserDto: LoginUserDto) {
+  async logIn(
+    @Body() loginUserDto: LoginUserDto,
+  ): Promise<{ accessToken: string }> {
     return this.authService.logIn(loginUserDto);
   }
 }
