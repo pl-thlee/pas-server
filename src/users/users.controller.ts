@@ -7,13 +7,11 @@ import {
   Param,
   Delete,
   ForbiddenException,
-  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { SignUpUserDto } from './dto/signup-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginUserDto } from './dto/login-user.dto';
 
 @ApiTags('Users')
 @ApiResponse({ status: 200, description: '성공' })
@@ -24,23 +22,13 @@ export class UsersController {
   @ApiOperation({ summary: '회원가입' })
   @Post()
   async signUp(@Body() signUpUserDto: SignUpUserDto) {
-    const user = this.usersService.findByStudentId(signUpUserDto.studentId);
-    if (!user) {
-      throw new NotFoundException();
-    }
-
     const result = await this.usersService.signUp(signUpUserDto);
     if (result) {
       return '회원가입 성공';
     } else {
+      // 이미 가입된 학번이 있을 때 403 Error
       throw new ForbiddenException();
     }
-  }
-
-  @ApiOperation({ summary: '로그인' })
-  @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
-    return loginUserDto;
   }
 
   @Get()

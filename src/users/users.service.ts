@@ -13,15 +13,18 @@ export class UsersService {
   ) {}
 
   async signUp(signUpUserDto: SignUpUserDto) {
-    // console.log('[signUp]', signUpUserDto);
     const { userId, studentId, password, name, phone, email, userGroup } =
       signUpUserDto;
+
+    // 이미 가입된 학번이 있는지 확인
     const user = await this.usersRepository.findOne({ where: { studentId } });
     if (user) {
       return false;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // 기존에 가입한 정보가 없다면 회원가입 진행
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
     await this.usersRepository.save({
       userId,
       studentId,
