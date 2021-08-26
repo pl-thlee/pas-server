@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('User', { schema: 'pas' })
@@ -19,6 +19,11 @@ export class User {
   @ApiProperty({ example: '$code1234', description: '비밀번호' })
   @IsString()
   @IsNotEmpty()
+  // 특수문자 / 문자 / 숫자 포함 형태의 8 ~ 15자리
+  @Matches(/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/, {
+    message:
+      'The password must contain at least characters, numeric, and special characters.',
+  })
   @Column('char', { name: 'ps', length: 100 })
   password: string;
 
