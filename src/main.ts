@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -7,7 +8,10 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
-  /** @see https://docs.nestjs.com/openapi/introduction */
+  /** @see https://docs.nestjs.kr/pipes#class-validator */
+  app.useGlobalPipes(new ValidationPipe());
+
+  /** @see https://docs.nestjs.kr/openapi/introduction */
   const config = new DocumentBuilder()
     .setTitle('PAS Server')
     .setDescription('Programming Assistant System API description')

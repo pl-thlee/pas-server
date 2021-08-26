@@ -1,29 +1,42 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDate, IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('User', { schema: 'pas' })
 export class User {
   @ApiProperty({ example: 'codyung', description: '아이디' })
+  @IsString()
+  @IsNotEmpty()
   @Column('char', { name: 'id', length: 50 })
   userId: string;
 
   @ApiProperty({ example: 201812345, description: '학번' })
+  @IsInt()
+  @IsNotEmpty()
   @PrimaryGeneratedColumn({ type: 'int', name: 'sid' })
   studentId: number;
 
   @ApiProperty({ example: '$code1234', description: '비밀번호' })
+  @IsString()
+  @IsNotEmpty()
   @Column('char', { name: 'ps', length: 100 })
   password: string;
 
   @ApiProperty({ example: '이도제', description: '이름' })
+  @IsString()
+  @IsNotEmpty()
   @Column('char', { name: 'name', length: 50 })
   name: string;
 
   @ApiProperty({ example: '010-5100-1436', description: '휴대폰' })
+  @IsString()
+  @IsNotEmpty()
   @Column('char', { name: 'phone', length: 50 })
   phone: string;
 
   @ApiProperty({ example: 'cororing@pusan.ac.kr', description: '이메일' })
+  @IsEmail()
+  @IsNotEmpty()
   @Column('char', { name: 'email', length: 50 })
   email: string;
 
@@ -32,6 +45,7 @@ export class User {
     description: '사용자 그룹',
     default: 'student',
   })
+  @IsString()
   // @Column('enum', { name: 'user_group', enum: ['student', 'teacher'] })
   @Column('varchar', { name: 'user_group', length: 15, default: 'student' })
   userGroup: string;
