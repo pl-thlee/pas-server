@@ -5,6 +5,10 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
+/** @TODO issue */
+import dotenv from 'dotenv';
+dotenv.config();
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -12,8 +16,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private usersRepository: Repository<User>,
   ) {
     super({
-      secretOrKey: process.env.SECRET_KEY,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.SECERT_KEY,
     });
   }
 
