@@ -11,7 +11,9 @@ import * as ormconfig from '../ormconfig';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot(ormconfig),
     UsersModule,
     AuthModule,
