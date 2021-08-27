@@ -10,7 +10,7 @@ import { GetUser } from './get-user.decorator';
 @ApiTags('Auth')
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: '회원가입' })
   @Post('signup')
