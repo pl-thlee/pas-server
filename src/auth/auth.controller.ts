@@ -1,28 +1,34 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { User } from 'src/users/entities/user.entity';
+import { LoginUserDto } from 'src/auth/dto/login-user.dto';
+import { User } from 'src/auth/entities/user.entity';
 import { AuthService } from './auth.service';
+import { SignUpUserDto } from './dto/signup-user.dto';
 import { GetUser } from './get-user.decorator';
 
-@ApiTags('Users')
+@ApiTags('Auth')
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private authService: AuthService) {}
+
+  @ApiOperation({ summary: '회원가입' })
+  @Post('signup')
+  signUp(@Body() signUpUserDto: SignUpUserDto): Promise<void> {
+    return this.authService.signUp(signUpUserDto);
+  }
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
-  async logIn(
-    @Body() loginUserDto: LoginUserDto,
-  ): Promise<{ accessToken: string }> {
+  logIn(@Body() loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
     return this.authService.logIn(loginUserDto);
   }
 
-  @Post('test')
+  @Get('login')
   @UseGuards(AuthGuard())
   async test(@GetUser() user: User) {
-    console.log('[user]', user);
-    return user;
+    // UserGuards 에 @nestjs/passport 에서 가져온 AuthGuard() 를 이용하면 사용자 정보 주입 가능
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }

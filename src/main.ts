@@ -9,7 +9,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   /** @see https://docs.nestjs.kr/pipes#class-validator */
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   /** @see https://docs.nestjs.kr/openapi/introduction */
   const config = new DocumentBuilder()
