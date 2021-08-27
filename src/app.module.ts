@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { PlaygroundsModule } from './playgrounds/playgrounds.module';
 
 import * as ormconfig from '../ormconfig';
 
@@ -13,6 +14,7 @@ import * as ormconfig from '../ormconfig';
     }),
     TypeOrmModule.forRoot(ormconfig),
     AuthModule,
+    PlaygroundsModule,
   ],
 })
 export class AppModule implements NestModule {
