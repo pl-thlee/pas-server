@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayInit{
@@ -9,9 +10,9 @@ export class ChatGateway implements OnGatewayInit{
   afterInit(server: any){
     this.logger.log("Initialized!");
   }
-  
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+
+  @SubscribeMessage('send')
+  sendMessage(client: Socket, message: string) {
+    return {event: 'msgToClient', data: message};
   }
 }
