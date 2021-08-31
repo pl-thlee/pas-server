@@ -1,9 +1,21 @@
 import { Logger } from '@nestjs/common';
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { 
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection, 
+  OnGatewayDisconnect, 
+  OnGatewayInit, 
+  SubscribeMessage, 
+  WebSocketGateway,
+  WebSocketServer,
+ } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+
+  @WebSocketServer()
+  server: Server;
 
   private logger: Logger = new Logger('ChatGateway');
 
@@ -16,7 +28,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleConnection(client: Socket) {}
 
   @SubscribeMessage('send')
-  sendMessage(client: Socket, message: string) {
-    return {event: 'send', data: message};
+  sendMessage(@MessageBody() data: string, @ConnectedSocket() client) {
+    const [room, nickname, message] = data;
+    this.server.sockets.emit(room,client,[nickname,message])
   }
 }
