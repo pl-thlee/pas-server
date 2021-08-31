@@ -27,6 +27,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
   handleConnection(client: Socket) {}
 
+
+  @SubscribeMessage('welcome')
+  connectSomeone(
+    @MessageBody() data: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const[nickname, room] = data;
+    const comeOn = `$(nickname)님이 입장했습니다.`;
+    this.server.emit('comeOn' + room, comeOn);
+  }
+
+
   private broadcast(event, client, message:any){ // 메시지 전체 전송
     for(let id in this.server.sockets)
       if(id !== client.id) this.server.sockets[id].emit(event, message);
