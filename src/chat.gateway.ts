@@ -10,7 +10,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   afterInit(server: Server){
     this.logger.log("Initialized!");
   }
-  handleDisconnect(client: Socket) {}
+  handleDisconnect(client: Socket) {
+    this.logger.log("Client disconnected: ${client.id")
+  }
   handleConnection(client: Socket) {}
 
   @SubscribeMessage('send')
