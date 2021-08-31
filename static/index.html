@@ -24,19 +24,19 @@
       }
       socket.emit('welcome', nickname, room);
       
-      socket.on('connect', () => {
+      socket.on('connect', () => { // connect가 감지되면 실행해야되는것들
 
-        socket.on(room, (data) => {
+        socket.on(room, (data) => { // 실제 메시지 주고받는것 chatList에 표시
           $('#chatList').append(`<div>${data[0]} : ${data[1]}</div>`);
         });
 
-        socket.on('comeOn' + room, (comeOn) => {
+        socket.on('comeOn' + room, (comeOn) => { // ~님이 입장했습니다 chatList에 표시
           $('#chatList').append(`<div style="color:blue;">${comeOn}</div>`);           
         });
 
-        socket.on('test', (data) => {
-          console.log(data)
-        });
+        // socket.on('test', (data) => {
+        //   console.log(data)
+        // });
       });
 
         function msg_send() {
@@ -46,14 +46,14 @@
             $('#chatList').append(`<div style="color:red;">나 : ${message}</div>`);
         }
 
-        $(document).ready(() => {
+        $(document).ready(() => { // room 넘버 실제 입력 받은 코드로 표시함
             $('#room').text(`${room}`);
         });
     </script>
 </head>
 <body>
-    <h1>채팅방<span id="room" style="font-size: large"></span></h1>
-    <div id="chatList"></div>
+    <h1>채팅방<span id="room" style="font-size: large"></span></h1> <!-- h1옆에 room number 표시-->
+    <div id="chatList"></div> 
     <div id="sendMessage" style="position: fixed; bottom: 5%">
         <input
             type="text"
