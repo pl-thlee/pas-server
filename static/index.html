@@ -6,35 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script
-    src="https://code.jquery.com/jquery-3.6.0.js"
-    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-    crossorigin="anonymous"></script>
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 
     <script>
-        const socket = io('ws://localhost:81/chat');
-        const nickname = prompt('닉네임 알려주세요.');
-        if(!nickname){
-            window.location.reload();
-        }
-        const room = prompt('입장할 방의 코드를 적어주세요.');
-        if(!room){
-            window.location.reload();
-        }
-        socket.emit('welcome', nickname, room);
+      const socket = io('ws://localhost:81/chat');
+      const nickname = prompt('닉네임을 알려주세요.');
+      if (!nickname) {
+        window.location.reload();
+      }
+      const room = prompt('입장할 방의 코드를 적어주세요.');
+      if (!room) {
+        window.location.reload();
+      }
+      socket.emit('welcome', nickname, room);
+      
+      socket.on('connect', () => {
 
-        socket.on('connect', () => {
-            socket.on(room, (data) => {
-                $('#chatList').append(`<div>${data[0]} : ${data[1]}</div>`);
-            });
-            socket.io('comeOn' + room, (comeOn) => {
-                $('#chatList').append(`<div style="color:blue;">${comeOn}</div>`);
-            });
-
-            socket.on('test', (data) => {
-                console.log(data);
-            });
+        socket.on(room, (data) => {
+          $('#chatList').append(`<div>${data[0]} : ${data[1]}</div>`);
         });
+
+        socket.on('comeOn' + room, (comeOn) => {
+          $('#chatList').append(`<div style="color:blue;">${comeOn}</div>`);           
+        });
+
+        socket.on('test', (data) => {
+          console.log(data)
+        });
+      });
 
         function msg_send() {
             let message = $('#msg').val();
