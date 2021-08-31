@@ -9,9 +9,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
  } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+ import { Client, Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway(81, {namespace: 'chat'})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
   @WebSocketServer()
@@ -22,10 +22,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   afterInit(server: Server){
     this.logger.log("Initialized!");
   }
-  handleDisconnect(client: Socket) {
-    this.logger.log("Client disconnected: ${client.id")
+  
+  handleConnection(client: Socket) {
+    this.logger.log(`Client connected: ${client.id}`);
   }
-  handleConnection(client: Socket) {}
+  handleDisconnect(client: Socket) {
+    this.logger.log(`Client disconnected: ${client.id}`);
+  }
 
 
   @SubscribeMessage('welcome')
@@ -35,20 +38,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   ) {
     const[nickname, room] = data;
     console.log(`${nickname}님이 코드: ${room}방에 접속했습니다.`);
-    const comeOn = `$(nickname)님이 입장했습니다.`;
+    const comeOn = `${nickname}님이 입장했습니다.`;
     this.server.emit('comeOn' + room, comeOn);
   }
 
 
-  private broadcast(event, client, message:any){ // 메시지 전체 전송
-    for(let id in this.server.sockets)
-      if(id !== client.id) this.server.sockets[id].emit(event, message);
+  private broadcast(event, client, message: any) {
+    for (let id in this.server.sockets)
+      if (id !== client.id) this.server.sockets[id].emit(event, message);
   }
 
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client) {
     const [room, nickname, message] = data;
     console.log(`${client.id}: ${data}`);
-    this.broadcast(room,client,[nickname,message])
+    this.broadcast(room, client, [nickname,message]);
   }
 }
