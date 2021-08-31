@@ -1,18 +1,20 @@
 import { Logger } from '@nestjs/common';
-import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway()
-export class ChatGateway implements OnGatewayInit{
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
   private logger: Logger = new Logger('ChatGateway');
 
-  afterInit(server: any){
+  afterInit(server: Server){
     this.logger.log("Initialized!");
   }
+  handleDisconnect(client: Socket) {}
+  handleConnection(client: Socket) {}
 
   @SubscribeMessage('send')
   sendMessage(client: Socket, message: string) {
-    return {event: 'msgToClient', data: message};
+    return {event: 'send', data: message};
   }
 }
