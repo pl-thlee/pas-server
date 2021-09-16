@@ -38,6 +38,13 @@ export class ChatGateway
     socket.to(`roomId`).emit('a new user has joined the room');
   }
 
+  @SubscribeMessage('disconnection')
+  async leaveRoom(socket: Socket) {
+    const { roomId } = socket.handshake.query;
+    socket.to(roomId).emit(`Client ${socket.id} has left the room`);
+    socket.disconnect();
+  }
+
   @SubscribeMessage('message')
   handleMessage(socket: Socket, message: string) {
     const { roomId } = socket.handshake.query;
