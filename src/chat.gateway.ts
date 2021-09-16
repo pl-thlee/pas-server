@@ -31,7 +31,8 @@ export class ChatGateway
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  handleMessage(socket: Socket, message: string) {
+    const { roomId } = socket.handshake.query;
+    socket.in(roomId).emit('message', message);
   }
 }
