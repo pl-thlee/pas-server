@@ -30,6 +30,14 @@ export class ChatGateway
     console.log(`Client ${socket.id} disconnected`);
   }
 
+  @SubscribeMessage('connection')
+  async joinRoom(socket: Socket) {
+    const { roomId } = socket.handshake.query;
+    socket.join(roomId);
+    console.log(`Client has joined in ${roomId}`);
+    socket.to(`roomId`).emit('a new user has joined the room');
+  }
+
   @SubscribeMessage('message')
   handleMessage(socket: Socket, message: string) {
     const { roomId } = socket.handshake.query;
