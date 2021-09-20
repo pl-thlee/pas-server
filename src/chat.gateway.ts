@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -8,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(81, {
+@WebSocketGateway({
   cors: {
     origin: 'http://localhost:3000',
     // methods: ['GET', 'POST'],
@@ -20,34 +21,56 @@ export class ChatGateway
 {
   @WebSocketServer()
   server: Server;
-  async afterInit(server: Server) {
-    console.log('Initialized');
+
+  afterInit() {
+    console.log('Initialized!');
   }
+
   async handleConnection(socket: Socket) {
     console.log(`Client ${socket.id} connected`);
+    const { roomID } = socket.handshake.query;
+    socket.join(roomID);
+    console.log(`Client has joined ${roomID}`);
+    await this.server
+      .to(roomID)
+      .emit('connection', 'a new user has joined the room');
   }
+
   async handleDisconnect(socket: Socket) {
     console.log(`Client ${socket.id} disconnected`);
+    const { roomID } = socket.handshake.query;
+    // console.log(``);
+    console.log(`Client has left ${roomID}`);
+    this.server
+      .to(roomID)
+      .emit('disconnect', `Client ${socket.id} has left the room`);
+    await socket.disconnect();
   }
 
-  @SubscribeMessage('connection')
-  async joinRoom(socket: Socket) {
-    const { roomId } = socket.handshake.query;
-    socket.join(roomId);
-    console.log(`Client has joined in ${roomId}`);
-    socket.to(`roomId`).emit('a new user has joined the room');
-  }
+  // @SubscribeMessage('connection')
+  // async joinRoom(socket: Socket) {}
 
-  @SubscribeMessage('disconnection')
-  async leaveRoom(socket: Socket) {
-    const { roomId } = socket.handshake.query;
-    socket.to(roomId).emit(`Client ${socket.id} has left the room`);
-    socket.disconnect();
-  }
+  // @SubscribeMessage('disconnect')
+  // async leaveRoom(socket: Socket) {}
 
   @SubscribeMessage('message')
-  handleMessage(socket: Socket, message: string) {
-    const { roomId } = socket.handshake.query;
-    socket.in(roomId).emit('message', message);
+  async sendMessage(socket: Socket, message: string) {
+    const { roomID } = socket.handshake.query;
+    console.log(`Client has sent ${message}`);
+    await socket.in(roomID).emit('message', message);
   }
+
+  // @SubscribeMessage('connection')
+  // async joinRoom(socket: Socket) {
+  //   console.log(`Client ${socket.id} connected`);
+  //   const { roomID } = socket.handshake.query;
+  //   socket.join(roomID);
+  // }
+
+  // @SubscribeMessage('message')
+  // sendMessage(socket: Socket, message: string) {
+  //   const { roomID } = socket.handshake.query;
+  //   console.log(`Client has sent ${message}`);
+  //   socket.to(roomID).emit('message', message);
+  // }
 }
