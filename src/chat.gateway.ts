@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -22,55 +21,40 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
 
-  afterInit() {
-    console.log('Initialized!');
+  async afterInit() {
+    console.log('Initialized');
   }
 
   async handleConnection(socket: Socket) {
+    console.log('connect');
     console.log(`Client ${socket.id} connected`);
+
     const { roomID } = socket.handshake.query;
     socket.join(roomID);
-    console.log(`Client has joined ${roomID}`);
-    await this.server
-      .to(roomID)
-      .emit('connection', 'a new user has joined the room');
+    console.log(`Client has joined in ${roomID}`);
+    // socket.to(`roomId`).emit('connection', 'a new user has joined the room');
   }
-
   async handleDisconnect(socket: Socket) {
+    console.log('disconnect');
     console.log(`Client ${socket.id} disconnected`);
     const { roomID } = socket.handshake.query;
-    // console.log(``);
-    console.log(`Client has left ${roomID}`);
-    this.server
+    socket
       .to(roomID)
       .emit('disconnect', `Client ${socket.id} has left the room`);
-    await socket.disconnect();
+    socket.disconnect();
   }
 
   // @SubscribeMessage('connection')
   // async joinRoom(socket: Socket) {}
 
-  // @SubscribeMessage('disconnect')
+  // @SubscribeMessage('disconnection')
   // async leaveRoom(socket: Socket) {}
 
   @SubscribeMessage('message')
-  async sendMessage(socket: Socket, message: string) {
+  handleMessage(socket: Socket, message: string) {
     const { roomID } = socket.handshake.query;
-    console.log(`Client has sent ${message}`);
-    await socket.in(roomID).emit('message', message);
+    this.server.to(roomID).emit('message', message);
+    // socket.in(roomID).emit('message', message);
+    console.log(`${socket.id}가 메시지 보냄: ${message}`);
   }
-
-  // @SubscribeMessage('connection')
-  // async joinRoom(socket: Socket) {
-  //   console.log(`Client ${socket.id} connected`);
-  //   const { roomID } = socket.handshake.query;
-  //   socket.join(roomID);
-  // }
-
-  // @SubscribeMessage('message')
-  // sendMessage(socket: Socket, message: string) {
-  //   const { roomID } = socket.handshake.query;
-  //   console.log(`Client has sent ${message}`);
-  //   socket.to(roomID).emit('message', message);
-  // }
 }
