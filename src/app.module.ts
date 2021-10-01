@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { ChatGateway } from './chat.gateway';
 
 import * as ormconfig from '../ormconfig';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -14,8 +14,9 @@ import * as ormconfig from '../ormconfig';
     }),
     TypeOrmModule.forRoot(ormconfig),
     AuthModule,
+    ChatModule,
   ],
-  providers: [ChatGateway],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
