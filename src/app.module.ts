@@ -5,10 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 
 import * as ormconfig from '../ormconfig';
-import { ChatModule } from './chat/chat.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { ChatModule } from 'chat/chat.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'client'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
